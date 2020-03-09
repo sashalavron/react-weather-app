@@ -6,26 +6,25 @@ import WeatherOverview from './components/WeatherOverview'
 import WeatherList from './components/WeatherList'
 import WeatherListItem from './components/WeatherListItem'
 
-function App({ loadForecast }) {
-  const [weather] =  useState({ city: 'Kyiv', temperature: '+3', date: '24.02.2020' })
-  const [weatherList] = useState([
-    { id: '1', city: 'Kyiv', temperature: '+1', date: '25.02.2020' }, 
-    { id: '2', city: 'Kyiv', temperature: '+4', date: '26.02.2020' }
-  ])
+const API_KEY = '1a2a92ea8638bd68647f4c22d6ab9243'
+const CITY_ID = '703448'
+const API_URL = `http://api.openweathermap.org/data/2.5/forecast?id=${CITY_ID}&appid=${API_KEY}&units=metric&cnt=7`
 
+function App({ loadForecast, city, forecasts }) {
   useEffect(() => {
-    loadForecast('https://samples.openweathermap.org/data/2.5/forecast?id=524901&appid=b6907d289e10d714a6e88b30761fae22')
+    loadForecast(API_URL)
   }, [ loadForecast ])
 
+  const [currentForecast, ...nextForecasts] = forecasts
 
   return (
     <div className="App">
       <WeatherContainer
         renderOverview={
-          <WeatherOverview weather={ weather } />
+          <WeatherOverview city={ city } forecast={ currentForecast } />
         }
         renderList={
-          <WeatherList items={ weatherList } >
+          <WeatherList items={ nextForecasts } >
             { item => 
                 <WeatherListItem item={ item }
                 />
@@ -41,7 +40,12 @@ const mapDispatchToProps = dispatch => ({
   loadForecast: url => dispatch(loadForecast(url))
 })
 
+const mapStateToProps = ({ city, forecasts }) => ({
+  city,
+  forecasts,
+})
+
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(App);

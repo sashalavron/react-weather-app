@@ -11,19 +11,30 @@ const useStyles = makeStyles({
   }
 })
 
-function WeatherOverview(props) {
+function WeatherOverview({ city, forecast }) {
   const classes = useStyles()
+  
+  if (!city.id || !forecast.dt) {
+    return null
+  }
+
   return (
     <Card className={ classes.container }>
       <CardContent>
         <div>
-          { props.weather.city }
+          { `${city.name}, ${city.country}` }
         </div>
         <div>
-          { props.weather.date }
+          { forecast.dt }
         </div>
         <div>
-          { props.weather.temperature }
+          { forecast.main.tempddd }
+        </div>
+        <div>
+          { `Min: ${forecast.main.temp_max}` }
+        </div>
+        <div>
+          { `Max: ${forecast.main.temp_min}` }
         </div>
       </CardContent>
     </Card>
@@ -31,11 +42,22 @@ function WeatherOverview(props) {
 }
 
 WeatherOverview.propTypes = {
-  weather: PropTypes.shape({
-    city: PropTypes.string,
-    date: PropTypes.string,
-    temperature: PropTypes.string,
+  city: PropTypes.shape({
+    name: PropTypes.string,
+    country: PropTypes.string,
+  }),
+
+  forecast: PropTypes.shape({
+    datetime: PropTypes.number,
+    temperature: PropTypes.number,
+    temperatureMax: PropTypes.number,
+    temperatureMin: PropTypes.number,
   })
+}
+
+WeatherOverview.defaultProps = {
+  forecast: {},
+  city: {},
 }
 
 export default WeatherOverview

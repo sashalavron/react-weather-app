@@ -8,12 +8,7 @@ const addForecast = (payload) => ({
 
 export function loadForecast(url) {
   return async function(dispatch) {
-    const resp = await axios.get(url, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-    })
-    console.log('resp', resp)
-    return dispatch(addForecast(resp))
+    const { data } = await axios.get(url)
+    return dispatch(addForecast(data))
   }
 }
